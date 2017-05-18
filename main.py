@@ -13,7 +13,14 @@
 # limitations under the License.
 
 # [START app]
+from __future__ import print_function
+from future.standard_library import install_aliases
+install_aliases()
 import logging
+
+from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
 
 from flask import Flask
 from flask import jsonify
@@ -57,7 +64,7 @@ def server_error(e):
 
 def makeWebhookResult(req):
     return {
-        "speech": "test speech",
+        "speech": "Hi, I am the backend, this is the name I have received: " + req.get('result').get('parameters').get('given-name'),
         "displayText": "tyest diplay text",
         # "data": data,
         # "contextOut": [],
