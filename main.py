@@ -16,14 +16,37 @@
 import logging
 
 from flask import Flask
+from flask import jsonify
+from flask import request
+from flask import make_response
+
+from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
+
+import json
+import os
 
 
+# Flask app should start in global layout
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def hello():
-    return 'Hello World!'
+    a = {'name': 'captibot'}
+    req = request.get_json(silent=True, force=True)
+
+    print("Request:")
+    print(json.dumps(req, indent=4))
+
+    res = makeWebhookResult(req)
+
+    res = json.dumps(res, indent=4)
+    # print(res)
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
 
 
 @app.errorhandler(500)
@@ -31,4 +54,14 @@ def server_error(e):
     # Log the error and stacktrace.
     logging.exception('An error occurred during a request.')
     return 'An internal error occurred.', 500
+
+def makeWebhookResult(req):
+    return {
+        "speech": "test speech",
+        "displayText": "tyest diplay text",
+        # "data": data,
+        # "contextOut": [],
+        "source": "captify bot"
+    }
+
 # [END app]
